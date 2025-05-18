@@ -14,6 +14,9 @@ import productRouter from './route/product.route.js'
 import cartRouter from './route/cart.route.js'
 import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
+
+
+//connecte to database
 connectDB()
 
 const app = express()

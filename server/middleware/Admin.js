@@ -12,7 +12,7 @@ export const admin = async(req,res,next)=>{
                 error : true,
                 success : false
             })
-       }
+       }        
 
        next()
 
