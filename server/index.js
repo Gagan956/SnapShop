@@ -15,47 +15,49 @@ import cartRouter from './route/cart.route.js'
 import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
 
-
-//connecte to database
+// connect to database
 connectDB()
 
 const app = express()
-app.use(cors({ 
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
-    allowedHeaders: "Content-Type,Authorization",
-    origin : process.env.FRONTEND_URL,
-    withCredentials : true,
-}));
 
-app.options("*", cors());
-app.use(express.json())
-app.use(cookieParser())
-app.use(morgan())
-app.use(helmet({
-    crossOriginResourcePolicy : false
+// ✅ Correct CORS setup
+app.use(cors({ 
+    origin: process.env.FRONTEND_URL, // example: "http://localhost:3000"
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // FIXED (instead of withCredentials)
 }))
 
-const PORT = 8080 || process.env.PORT 
+// handle preflight
+app.options("*", cors())
 
-app.get("/",(req,res)=>{
-    ///server to client
+app.use(express.json())
+app.use(cookieParser())
+app.use(morgan("dev"))
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}))
+
+// ✅ Fix PORT fallback
+const PORT = process.env.PORT || 8080
+
+app.get("/", (req, res) => {
     res.json({
-        message : "Server is running " , PORT
+        message: "Server is running",
+        port: PORT
     })
 })
 
-app.use('/api/user',userRouter)
-app.use("/api/category",categoryRouter)
-app.use("/api/file",uploadRouter)
-app.use("/api/subcategory",subCategoryRouter)
-app.use("/api/product",productRouter)
-app.use("/api/cart",cartRouter)
-app.use("/api/address",addressRouter)
-app.use('/api/order',orderRouter)
+// Routes
+app.use('/api/user', userRouter)
+app.use("/api/category", categoryRouter)
+app.use("/api/file", uploadRouter)
+app.use("/api/subcategory", subCategoryRouter)
+app.use("/api/product", productRouter)
+app.use("/api/cart", cartRouter)
+app.use("/api/address", addressRouter)
+app.use('/api/order', orderRouter)
 
-
-app.listen(PORT,()=>{
-    console.log(`Server is running ${PORT}`)
+app.listen(PORT, () => {
+    console.log(`✅ Server is running on port ${PORT}`)
 })
-
-
